@@ -1,6 +1,6 @@
-FROM node:14
-WORKDIR /app
-COPY ./package.json ./
+FROM node:16
+WORKDIR /wordle
+COPY ./package.json ./wordle
 RUN npm install
 COPY . .
 RUN npm run build
