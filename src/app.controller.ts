@@ -1,21 +1,22 @@
 import { Controller, Get, HttpStatus, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { WordleService } from './core/services/wordle/wordle.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller()
 export class AppController {
   constructor(private readonly wordleService: WordleService) {}
 
-  // @Cron(CronExpression.EVERY_MINUTE)
-  // async cronEvangileOfTheDay(): Promise<boolean> {
-  //   try {
-  //     await this.changeQuoteDayt();
-  //     return true;
-  //   } catch (error) {
-  //     console.log(error);
-  //     return false;
-  //   }
-  // }
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async cronEvangileOfTheDay(@Res() res: Response): Promise<void> {
+    try {
+      await this.wordleService.changeWordDay();
+      res.status(200).json(true);
+    } catch (error) {
+      console.log(error);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(false);
+    }
+  }
 
   @Get('changeManually')
   async changeQuoteDay(@Res() res: Response) {
