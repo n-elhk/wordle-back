@@ -8,20 +8,18 @@ export class AppController {
   constructor(private readonly wordleService: WordleService) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async cronEvangileOfTheDay(@Res() res: Response): Promise<void> {
+  async changeWordDay(): Promise<void> {
     try {
       await this.wordleService.changeWordDay();
-      res.status(200).json(true);
     } catch (error) {
       console.log(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(false);
     }
   }
 
-  @Get('changeManually')
-  async changeQuoteDay(@Res() res: Response) {
+  @Get('updateWord')
+  async updateWord(@Res() res: Response) {
     try {
-      await this.wordleService.changeWordDay();
+      await this.changeWordDay();
       res.status(200).json(true);
     } catch (error) {
       console.log(error);
@@ -32,10 +30,10 @@ export class AppController {
   @Get('word')
   async getQuoteOfTheDay(@Res() res: Response) {
     try {
-      const quote = await this.wordleService.getWordOfTheDay();
-      quote.solution = Buffer.from(quote.solution).toString('base64');
-      quote.link = Buffer.from(quote.link).toString('base64');
-      res.status(HttpStatus.OK).json(quote);
+      const word = await this.wordleService.getWordOfTheDay();
+      word.solution = Buffer.from(word.solution).toString('base64');
+      word.link = Buffer.from(word.link).toString('base64');
+      res.status(HttpStatus.OK).json(word);
     } catch (error) {
       console.log(error);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(false);
